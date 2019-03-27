@@ -30,6 +30,7 @@ export class Block {
         this.nonce = 0
         this.hash = this.calculateHash()
     }
+    
     calculateHash(): string {
         let toHash = `${this.index}${this.timestamp}${this.txns}${this.previousHash}${this.nonce}`
         return SHA256(toHash).toString(CryptoJS.enc.Base64);
@@ -97,11 +98,8 @@ export class Blockchain {
             }
         }
 
-        console.log(`Transactions validated = ${JSON.stringify(validatedTxns.length, null, 4)}`);
-
         let block = new Block(Date.now(), validatedTxns, this.getLatestBlock().hash)
         block.mineBlock(this.difficulty)
-        console.log(`Current Block Succesfully mined ${JSON.stringify(block, null, 4)}`);
         this.chain.push(block);
         this.unminedTxns = [
             new Transaction(Date.now(), "mint", minerAddr, this.miningReward)
